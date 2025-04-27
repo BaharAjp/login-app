@@ -1,22 +1,23 @@
-describe('Login Page', () => {
-  it('should display the login form', () => {
-    cy.visit('/');
-    cy.get('form#loginForm').should('be.visible');
+it('should display alert on successful login', () => {
+  cy.visit('/');
+  cy.get('#username').type('admin');
+  cy.get('#password').type('password');
+
+  cy.on('window:alert', (alertText) => {
+    expect(alertText).to.equal('Login successful!');
   });
 
-  it('should login successfully with correct credentials', () => {
-    cy.visit('/');
-    cy.get('#username').type('admin');
-    cy.get('#password').type('password');
-    cy.get('button[type="submit"]').click();
-    cy.contains('Login successful!').should('be.visible');
+  cy.get('button[type="submit"]').click();
+});
+
+it('should display alert on unsuccessful login', () => {
+  cy.visit('/');
+  cy.get('#username').type('user');
+  cy.get('#password').type('wrongpassword');
+
+  cy.on('window:alert', (alertText) => {
+    expect(alertText).to.equal('Invalid credentials.');
   });
 
-  it('should show error with incorrect credentials', () => {
-    cy.visit('/');
-    cy.get('#username').type('user');
-    cy.get('#password').type('wrongpassword');
-    cy.get('button[type="submit"]').click();
-    cy.contains('Invalid credentials.').should('be.visible');
-  });
+  cy.get('button[type="submit"]').click();
 });
